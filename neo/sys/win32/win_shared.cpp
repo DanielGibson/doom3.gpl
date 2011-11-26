@@ -178,7 +178,7 @@ void Sys_GetCurrentMemoryStatus( sysMemoryStats_t &stats ) {
 	statex.dwLength = sizeof( statex );
 	GlobalMemoryStatusEx( &statex );
 
-	memset( &stats, 0, sizeof( stats ) );
+	memset( &stats, sizeof( stats ), 0 );
 
 	stats.memoryLoad = statex.dwMemoryLoad;
 

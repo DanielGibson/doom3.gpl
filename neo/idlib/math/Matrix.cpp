@@ -3125,6 +3125,7 @@ bool idMatX::IsOrthonormal( const float epsilon ) const {
 
 		ptr2 = mat + i;
 		sum = ptr2[0] * ptr2[0] - 1.0f;
+		// FIXME: should the following really use i?
 		for ( i = 1; i < numRows; i++ ) {
 			ptr2 += numColumns;
 			sum += ptr2[i] * ptr2[i];
