@@ -3102,7 +3102,7 @@ idMatX::IsOrthonormal
 ============
 */
 bool idMatX::IsOrthonormal( const float epsilon ) const {
-	float *ptr1, *ptr2, sum;
+	float *ptr1, *ptr2, sum, colVecSum, *colVecPtr;
 
 	if ( !IsSquare() ) {
 		return false;
@@ -3110,6 +3110,8 @@ bool idMatX::IsOrthonormal( const float epsilon ) const {
 
 	ptr1 = mat;
 	for ( int i = 0; i < numRows; i++ ) {
+		colVecSum = 0;
+		colVecPtr = mat+i; // row 0 col i - don't worry, numRows == numColums because IsSquare()
 		for ( int j = 0; j < numColumns; j++ ) {
 			ptr2 = mat + j;
 			sum = ptr1[0] * ptr2[0] - (float) ( i == j );
@@ -3120,17 +3122,14 @@ bool idMatX::IsOrthonormal( const float epsilon ) const {
 			if ( idMath::Fabs( sum ) > epsilon ) {
 				return false;
 			}
+			// row j, col i - this works because numRows == numColumns
+			colVecSum += colVecPtr[0] * colVecPtr[0];
+			colVecPtr += numColumns; // next row, same column
 		}
 		ptr1 += numColumns;
 
-		ptr2 = mat + i;
-		sum = ptr2[0] * ptr2[0] - 1.0f;
-		// FIXME: should the following really use i?
-		for ( i = 1; i < numRows; i++ ) {
-			ptr2 += numColumns;
-			sum += ptr2[i] * ptr2[i];
-		}
-		if ( idMath::Fabs( sum ) > epsilon ) {
+		// check that length of *column* vector i is 1 (no need for sqrt because sqrt(1)==1)
+		if ( idMath::Fabs( colVecSum - 1.0f ) > epsilon ) {
 			return false;
 		}
 	}
